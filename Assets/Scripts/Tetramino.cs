@@ -23,9 +23,8 @@ public class Tetramino : MonoBehaviour
     void Start()
     {
         // you can set the boundaries here for each when they are created - these are for the square tetramino
-        left_offset = -0.5f;
-        right_offset = 0.5f;
-        bottom_offset = -0.5f;
+        // use the block coordinates
+        computeOffsets();
     }
 
     // Update is called once per frame
@@ -82,7 +81,23 @@ public class Tetramino : MonoBehaviour
         if (Keyboard.current.upArrowKey.wasPressedThisFrame)    // and the rotate offset is in bounds
         {
             transform.Rotate(0f, 0f, 90f);
-            // update the offsets
+            computeOffsets();
+        }
+    }
+
+    void computeOffsets()
+    {
+        left_offset = float.MaxValue;
+        right_offset = float.MinValue;
+        bottom_offset = float.MaxValue;
+
+        foreach (Transform child in transform)
+        {
+            Vector3 localPos = child.localPosition;
+
+            left_offset = Mathf.Min(left_offset, localPos.x);
+            right_offset = Mathf.Max(right_offset, localPos.x);
+            bottom_offset = Mathf.Min(bottom_offset, localPos.y);
         }
     }
 }
